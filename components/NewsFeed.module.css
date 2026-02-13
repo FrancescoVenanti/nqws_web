@@ -75,3 +75,16 @@
     outline-offset: 4px;
     border-radius: 2px;
 }
+
+.readMore {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.readMore:hover {
+    opacity: 1;
+}

@@ -7,6 +7,9 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   title: "nQws",
   description: "Minimal news reader for the last 24 hours.",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export const viewport: Viewport = {

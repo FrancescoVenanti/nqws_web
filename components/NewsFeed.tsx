@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NewsItem } from "@/lib/api";
 import styles from "./NewsFeed.module.css";
 
@@ -8,8 +8,49 @@ interface NewsFeedProps {
     news: NewsItem[];
 }
 
+interface SeenNews {
+    id: string; // Using URL as ID
+    timestamp: number;
+}
+
 export default function NewsFeed({ news }: NewsFeedProps) {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+        // 1. Load existing seen news
+        const stored = localStorage.getItem("seenNews");
+        let seenNews: SeenNews[] = stored ? JSON.parse(stored) : [];
+
+        // 2. Filter out expired (> 24h)
+        const now = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        seenNews = seenNews.filter(item => (now - item.timestamp) < oneDayMs);
+
+        // 3. Update state with currently valid seen IDs (for rendering)
+        setSeenIds(new Set(seenNews.map(item => item.id)));
+
+        // 4. Add current news to the seen list (for next time)
+        // We only add items that are NOT already in the list to update their timestamp? 
+        // Or keep original timestamp? usually "first seen".
+        // Let's add new ones.
+        const existingIds = new Set(seenNews.map(item => item.id));
+        let hasChanges = false;
+
+        news.forEach(item => {
+            if (!existingIds.has(item.url)) {
+                seenNews.push({ id: item.url, timestamp: now });
+                existingIds.add(item.url);
+                hasChanges = true;
+            }
+        });
+
+        // 5. Save back to local storage
+        if (hasChanges || seenNews.length !== (stored ? JSON.parse(stored).length : 0)) {
+            localStorage.setItem("seenNews", JSON.stringify(seenNews));
+        }
+
+    }, [news]);
 
     const toggleItem = (index: number) => {
         setExpandedIndex(expandedIndex === index ? null : index);
@@ -47,7 +88,12 @@ export default function NewsFeed({ news }: NewsFeedProps) {
                             aria-expanded={isExpanded}
                             aria-controls={`content-${index}`}
                         >
-                            <h2 className={styles.title}>{item.title}</h2>
+                            <h2
+                                className={styles.title}
+                                style={{ opacity: seenIds.has(item.url) ? 0.6 : 1 }}
+                            >
+                                {item.title}
+                            </h2>
                             <time className={styles.time} dateTime={item.date} suppressHydrationWarning>
                                 {formatTime(item.date)}
                             </time>
@@ -60,6 +106,14 @@ export default function NewsFeed({ news }: NewsFeedProps) {
                         >
                             <div className={styles.descriptionContent}>
                                 <p className={styles.description}>{item.description}</p>
+                                <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.readMore}
+                                >
+                                    Read full story →
+                                </a>
                             </div>
                         </div>
                     </article>

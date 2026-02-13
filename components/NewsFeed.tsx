@@ -25,35 +25,37 @@ export default function NewsFeed({ news }: NewsFeedProps) {
         // 2. Filter out expired (> 24h)
         const now = Date.now();
         const oneDayMs = 24 * 60 * 60 * 1000;
-        seenNews = seenNews.filter(item => (now - item.timestamp) < oneDayMs);
+        const validSeenNews = seenNews.filter(item => (now - item.timestamp) < oneDayMs);
 
         // 3. Update state with currently valid seen IDs (for rendering)
-        setSeenIds(new Set(seenNews.map(item => item.id)));
+        setSeenIds(new Set(validSeenNews.map(item => item.id)));
 
-        // 4. Add current news to the seen list (for next time)
-        // We only add items that are NOT already in the list to update their timestamp? 
-        // Or keep original timestamp? usually "first seen".
-        // Let's add new ones.
-        const existingIds = new Set(seenNews.map(item => item.id));
-        let hasChanges = false;
-
-        news.forEach(item => {
-            if (!existingIds.has(item.url)) {
-                seenNews.push({ id: item.url, timestamp: now });
-                existingIds.add(item.url);
-                hasChanges = true;
-            }
-        });
-
-        // 5. Save back to local storage
-        if (hasChanges || seenNews.length !== (stored ? JSON.parse(stored).length : 0)) {
-            localStorage.setItem("seenNews", JSON.stringify(seenNews));
+        // 4. Update local storage if we filtered out expired items
+        if (validSeenNews.length !== seenNews.length) {
+            localStorage.setItem("seenNews", JSON.stringify(validSeenNews));
         }
-
     }, [news]);
 
     const toggleItem = (index: number) => {
-        setExpandedIndex(expandedIndex === index ? null : index);
+        const isExpanding = expandedIndex !== index;
+        setExpandedIndex(isExpanding ? index : null);
+
+        if (isExpanding) {
+            const item = news[index];
+            // If satisfied, mark as seen
+            if (!seenIds.has(item.url)) {
+                const now = Date.now();
+                const newSeenIds = new Set(seenIds);
+                newSeenIds.add(item.url);
+                setSeenIds(newSeenIds);
+
+                // Update local storage
+                const stored = localStorage.getItem("seenNews");
+                const seenNews: SeenNews[] = stored ? JSON.parse(stored) : [];
+                seenNews.push({ id: item.url, timestamp: now });
+                localStorage.setItem("seenNews", JSON.stringify(seenNews));
+            }
+        }
     };
 
     const formatTime = (dateString: string) => {

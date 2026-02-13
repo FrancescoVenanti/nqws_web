@@ -1,0 +1,20 @@
+Success: true
+Total items: 50
+First item keys: id, title, title_en, link, content, content_en, summary, summary_en, source, published_at, created_at, published_at_iso
+First item full: {
+  "id": 43700,
+  "title": "Discovered a reverse planetary system, overturns the rules",
+  "title_en": "Discovered a reverse planetary system, overturns the rules",
+  "link": "https://www.ansa.it/canale_scienza/notizie/spazio_astronomia/2026/02/13/scoperto-un-sistema-planetario-a-rovescio-sovverte-le-regole-_bbf4cce2-489a-4e25-aff7-0f452fd654ab.html",
+  "content": "Discovered thanks to the European space telescope Cheops.",
+  "content_en": "Discovered thanks to the European space telescope Cheops.",
+  "summary": "An unusual planetary system has been discovered thanks to the European space telescope Cheops.",
+  "summary_en": "An unusual planetary system has been discovered thanks to the European space telescope Cheops.",
+  "source": "ANSA - Top News",
+  "published_at": "2026-02-13T11:49:32.000Z",
+  "created_at": "2026-02-13 10:00:48",
+  "published_at_iso": "2026-02-13T11:49:32.000Z"
+}
+Item 0 date field: undefined
+Item 1 date field: undefined
+Item 2 date field: undefined

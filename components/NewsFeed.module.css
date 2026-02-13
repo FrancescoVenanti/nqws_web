@@ -1,0 +1,77 @@
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Minimal spacing, maybe border separators instead */
+    width: 100%;
+}
+
+.item {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.25rem 0;
+    cursor: pointer;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: opacity 0.2s ease;
+}
+
+.summary:hover {
+    opacity: 0.8;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-right: 1.5rem;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.time {
+    font-size: 0.875rem;
+    color: var(--muted-text);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.descriptionWrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-out;
+}
+
+.descriptionWrapper.expanded {
+    grid-template-rows: 1fr;
+}
+
+.descriptionContent {
+    overflow: hidden;
+}
+
+.description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--muted-text);
+    padding-bottom: 1.5rem;
+    padding-top: 0.5rem;
+}
+
+/* Focus styles for accessibility */
+.summary:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 4px;
+    border-radius: 2px;
+}

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import React from "react";
 import "./globals.css";
 import { AppearanceProvider } from "@/components/AppearanceProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "nQws",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <AppearanceProvider>
           <main>{children}</main>
         </AppearanceProvider>
+        <Analytics />
       </body>
     </html >
   );
